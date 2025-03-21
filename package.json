@@ -1,0 +1,9 @@
+
+
+{
+  "type": "module",
+  "dependencies": {
+    "esm": "^3.2.25",
+    "pg": "^8.14.1"
+  }
+}
