@@ -3,6 +3,32 @@
     <script src="javascripts\fetch.js"></script>
     <body>
         <h1>mf biatch</h1>
+        <form id = "form_data">
+            <label for ='question'>Question:</label>
+            <input id = "question" type="text">
+            <label for ='alternative_a'>alternative a:</label>
+            <input id = "alternative_a" type="text">
+            <label for ='alternative_b'>alternative b:</label>
+            <input id = "alternative_b" type="text">
+            <label for ='alternative_c'>alternative c:</label>
+            <input id = "alternative_c" type="text">
+            <label for ='alternative_d'>alternative d:</label>
+            <input id = "alternative_d" type="text">
+            <label for ='alternative_e'>alternative e:</label>
+            <input id = "alternative_e" type="text">
+
+            <label for ='correct_option'>Correct Option:</label>
+            <select id = 'correct_option'>
+                <option value = "a">a</option>
+                <option value = "b">b</option>
+                <option value = "c">c</option>
+                <option value = "d">d</option>
+                <option value = "e">e</option>
+            </select>
+            <button id = "form-submit" type="submit" form="form_data">Submit</button>
+            
+
+        </form>
         <table id = 'table'>
             <tr>
                 <th>question id</th>
