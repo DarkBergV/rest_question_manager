@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function(event){
 }
 
 document.getElementById("form-submit").addEventListener("click", async function(e){
-    form_items = ['question', 'alternative_a', 'alternative_b', 'alternative_c', 'alternative_d', 'alternative_e', 'correct_option']
+    form_items = ['question', 'alternative_a', 'alternative_b', 'alternative_c', 'alternative_d', 'alternative_e', 'correct_option', 'type_question', 'question_was_used']
     e.preventDefault()
     let form = document.querySelector('form')
     let data = new Object()
@@ -38,7 +38,7 @@ document.getElementById("form-submit").addEventListener("click", async function(
     .then(response => response.json())
     .then(res => {
         if (res.status === 'success'){
-            alert(asd)
+            alert("asd")
         }
     })
     
