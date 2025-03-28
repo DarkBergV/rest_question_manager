@@ -96,6 +96,7 @@ async function createDelete(id) {
 async function table() {
     let table_test = document.getElementById('table')
     let row = document.createElement('tr')
+    const values = {"question":1,"alternative_a":0,"alternative_b":0, "alternative_c":0, "alternative_d":0, "alternative_e":0, "correct_option": 0, "type_question":1, "date_created":1, "question_was_used":1 }
 
 
     data = await get_data()
@@ -104,13 +105,29 @@ async function table() {
         let row = document.createElement('tr')
         let id 
         for (const x in data.message[i]){
-                
-            let cell = document.createElement('th')
-            cell.append(data.message[i][x])
+            if (values[x] === 1 ){
+                let cell = document.createElement('th')
+                if(x === "question"){
+                    let link = document.createElement("a")
+                    link.href = `question.html${id}`
+                    link.addEventListener('click', async function (e) {
+                        e.preventDefault()
+                        await editPage(id)    
+                    
+                    }) 
+                    link.append(data.message[i][x])
+                    cell.append(link)
+                }else{
+                    cell.append(data.message[i][x])
+                }
+                row.append(cell)  
+            }
+            console.log(typeof x)
+            
             if (x === 'question_id'){
                 id = data.message[i][x]
             }
-            row.append(cell)    
+              
         }
         
         row.append(await createDelete(id))
@@ -121,6 +138,13 @@ async function table() {
     }
 
 
+    
+}
+
+async function editPage(id) {
+    
+    window.open(`question/question.html?id=${id}`)
+    
     
 }
 

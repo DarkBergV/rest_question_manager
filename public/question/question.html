@@ -1,0 +1,57 @@
+<html>
+    <head>
+        <title>question/</title>
+        <script>
+            document.addEventListener("DOMContentLoaded", function(){
+                
+                
+                async function load_question() {
+                    let query = window.location.href
+                    let id = query.split('?')[1].split('=')[1]
+                    await fetch(`http://localhost:3000/question/${id}`, {
+                        mode:'cors'
+                    })
+                    .then(response => response.json())
+                    .then(res => {
+                        
+                        if (res.status === 200){
+                            organizeData(res)
+                        }
+                    })
+                }
+
+                async function organizeData(res) {
+                    const values = {"question":1,"alternative_a":1,"alternative_b":1, "alternative_c":1, "alternative_d":1, "alternative_e":1, "correct_option": 0, "type_question":0, "date_created":2, "question_was_used":0 }
+                    let edit = document.getElementById('question_edit')
+
+                    for (const x in res.message[0]){
+                        if (values[x] === 1){
+                            let input = document.createElement('input')
+                            let label = document.createElement("label")
+                            label.append(x.replace('_', ' '), ': ')
+                            input.value = res.message[0][x]
+                            edit.append(label)
+                            edit.append(input)
+                        }
+                    }
+                    
+                    
+                }
+
+                load_question()
+                
+            })
+            
+            
+        </script>
+    </head>
+    
+    <body>
+        <div >
+            <form id = 'question_edit'>
+
+            </form>
+
+        </div>
+    </body>
+</html>
