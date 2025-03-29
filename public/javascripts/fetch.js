@@ -1,10 +1,15 @@
+import Router from './router.js'
 document.addEventListener("DOMContentLoaded", function(event){
-   
+ 
+    
+    const router = new Router(routes)
+
     async function get_data() {
     const response = await fetch("http://localhost:3000/home", {
         mode:"cors"})
 
     const json_file = await response.json()
+
     return json_file
   
     
@@ -143,7 +148,17 @@ async function table() {
 
 async function editPage(id) {
     
-    window.open(`question/question.html?id=${id}`)
+    await fetch(`http://localhost:3000/question/${id}`, {
+        mode:"cors"
+    }
+    )
+    .then(response =>{
+        console.log(response)
+    })
+   
+       
+
+    
     
     
 }
