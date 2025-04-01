@@ -1,6 +1,8 @@
 const routes = {
-    path:'questions/:id',
-    getTemplate:(params) => 'questions/question.html'
+    question:{
+    path:'questions/question.html',
+    title: 'question'
+    }
 }
 
 

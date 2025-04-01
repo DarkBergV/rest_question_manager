@@ -1,52 +1,26 @@
-
 class Router {
     constructor(routes){
-        this.routes = routes;
-        this._loadInitialRoute();
-    }
+    this.routes = routes;
+    this.rootElem = document.getElementById('app')
 
-    loadRoute(questions,id){
-        const matchedRoute = this._matchUrlToRoute(question);
-        const url = `/${[questions, id].join('/')}`
+    this.handleRoute();
 
-        history.pushState({}, '', url)
+    window.addEventListener('popstate', () => this.handleRoute());
+}
 
-        const routerOutletElement = document.querySelectorAll('[data-router-outlet]')[0];
-        routerOutletElement.innerHTML = matchedRoute.getTemplate(matchedRoute.params);
-    }
+handleRoute(){
+    const path = window.location.pathname;
+    const route = this.routes[path] || this.routes['/404'];
 
-    _matchUrlToRoute(urlSegments){
-        const routeParams = {}
-        
-        const matchedRoute = this.routes.find(route => {
-            const routePathSegments = route.path.split('/').slice(1);
+    this.rootElem.innerHTML = route.template;
 
-            if (routePathSegments.length !== urlSegments.length){
-                return false
-            }
+    document.title = route.title
 
-            const match =  routePathSegments.every((routePathSegment, i) => {
-                return routePathSegment === urlSegments[i] || routePathSegment[0] === ':';
-            });
-        
+}
 
-        if (match) {
-            routePathSegments.forEach((urlSegments,i) => {
-                if (segment[0] === ':'){
-                    const propName = segment.slice(1);
-                    routeParams[propName] = decodeURIComponent(urlSegments[i])
-                }
-            });
-        }
-        return match 
-    });
-    return {matchedRoute, params: routeParams}
-    }
+navigate(path){
+    window.history.pushState({}, '', path);
+    this.handleRoute();
 
-    _loadInitialRoute(){
-        const pathnameSplit = window.location.pathname.split('/');
-        const pathSegments = pathnameSplit.length > 1 ?pathnameSplit.slice(1) : '';
-
-        this.loadRoute(pathSegments);
-    }
+}
 }

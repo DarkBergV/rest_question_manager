@@ -1,8 +1,14 @@
-import Router from './router.js'
 document.addEventListener("DOMContentLoaded", function(event){
  
+    const routes = {
+        "question_page":{
+        path:'questions/question.html',
+        title: 'question'
+        }
+    }
     
-    const router = new Router(routes)
+        
+ 
 
     async function get_data() {
     const response = await fetch("http://localhost:3000/home", {
@@ -114,12 +120,12 @@ async function table() {
                 let cell = document.createElement('th')
                 if(x === "question"){
                     let link = document.createElement("a")
-                    link.href = `question.html${id}`
-                    link.addEventListener('click', async function (e) {
+                    link.href = `#question_page`
+                    /*link.addEventListener('click', async function (e) {
                         e.preventDefault()
-                        await editPage(id)    
+                        await locationHandler()  
                     
-                    }) 
+                    })*/ 
                     link.append(data.message[i][x])
                     cell.append(link)
                 }else{
@@ -154,14 +160,77 @@ async function editPage(id) {
     )
     .then(response =>{
         console.log(response)
-    })
+    }) 
+}
+
+
+async function locationHandler() {
+    
+
+
+    var location = window.location.hash.replace('#','')
+    console.log(location)
+
+    const route = routes[location] 
+    console.log(route)
+
+    let html = await fetch(route.path).then(response => response.text())
+    console.log(html, 'skibidi')
+
    
-       
+
+    document.getElementById('content').innerHTML = html
+
+    let response = await fetch(`http://localhost:3000/question/48`, {
+        mode:"cors"
+    }
+    )
+    .then(response =>response.json())
+    await organizeData(response)
 
     
     
+}
+
+
+async function organizeData(res) {
+    console.log(res)
+    const values = {"question":1,"alternative_a":1,"alternative_b":1, "alternative_c":1, "alternative_d":1, "alternative_e":1, "correct_option": 0, "type_question":0, "date_created":2, "question_was_used":0 }
+    let edit = document.getElementById('question_edit')
+    console.log(res.message)
+
+
+    for (const x in res.message.rows[0]){
+        if (values[x] === 1){
+            console.log(x)
+            let input = document.createElement('input')
+            let label = document.createElement("label")
+            label.append(x.replace('_', ' '), ': ')
+            input.value = res.message.rows[0][x]
+            edit.append(label)
+            edit.append(input)
+        }
+    }
+    
     
 }
+
+async function load_question() {
+    let query = window.location.href
+    let id = query.split('?')[1].split('=')[1]
+    await fetch(`http://localhost:3000/question/${id}`, {
+        mode:'cors'
+    })
+    .then(response => response.json())
+    .then(res => {
+        
+        if (res.status === 200){
+            organizeData(res)
+        }
+    })
+}
+
+window.addEventListener('hashchange', locationHandler)
 
 table()})
 
