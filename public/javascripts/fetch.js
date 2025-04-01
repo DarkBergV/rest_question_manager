@@ -1,9 +1,13 @@
 document.addEventListener("DOMContentLoaded", function(event){
  
     const routes = {
-        "question_page":{
-        path:'questions/question.html',
+        "/question_page/:id":{
+        path:'public/questions/question.html',
         title: 'question'
+        },
+        "/":{
+            path:'home.html',
+            title:'home'
         }
     }
     
@@ -120,14 +124,25 @@ async function table() {
                 let cell = document.createElement('th')
                 if(x === "question"){
                     let link = document.createElement("a")
-                    link.href = `#question_page`
-                    /*link.addEventListener('click', async function (e) {
-                        e.preventDefault()
-                        await locationHandler()  
+                    let nav = document.createElement('nav')
+                    link.href = `/question_page/${id}`
+                    link.addEventListener('click', async function (e) {
+                       
+                        const {target} = e;
+                        console.log(target)
+                     
+                        if (!target.matches('nav a')){
+                            return;
+                        }
+                        console.log('skibid')
+                        e.preventDefault();
+                        route();
                     
-                    })*/ 
+                    }) 
                     link.append(data.message[i][x])
-                    cell.append(link)
+                    nav.append(link)
+                    cell.append(nav)
+                    
                 }else{
                     cell.append(data.message[i][x])
                 }
@@ -164,7 +179,7 @@ async function editPage(id) {
 }
 
 
-async function locationHandler() {
+/*async function locationHandler() {
     
 
 
@@ -172,26 +187,27 @@ async function locationHandler() {
     console.log(location)
 
     const route = routes[location] 
-    console.log(route)
+    
 
     let html = await fetch(route.path).then(response => response.text())
-    console.log(html, 'skibidi')
+ 
 
    
 
-    document.getElementById('content').innerHTML = html
-
-    let response = await fetch(`http://localhost:3000/question/48`, {
-        mode:"cors"
+   
+    if (location == 'question_page'){
+        document.getElementById('content').innerHTML = html
+        let response = await fetch(`http://localhost:3000/question/48`, {
+            mode:"cors"
+        }
+        )
+        .then(response =>response.json())
+        await organizeData(response)
     }
-    )
-    .then(response =>response.json())
-    await organizeData(response)
 
     
     
-}
-
+}*/
 
 async function organizeData(res) {
     console.log(res)
@@ -230,7 +246,33 @@ async function load_question() {
     })
 }
 
-window.addEventListener('hashchange', locationHandler)
+const route = (event) => {
+    console.log('goofy ass')
+    event = event || window.event;
+    
+    event.preventDefault();
+
+    window.history.pushState({}, "", event.target.href);
+    locationHandler();
+}
+
+const locationHandler = async() =>{
+    const location = window.location.pathname;
+    console.log(location)
+    if (location.length ==0){
+        location = '/';
+    }
+
+    const route = routes[location]
+
+    const html = await fetch(route).then((response) => response.text());
+    console.log(html)
+
+    document.getElementById('content').innerHTML = html;
+
+    
+
+}
 
 table()})
 
