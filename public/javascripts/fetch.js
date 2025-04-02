@@ -8,7 +8,16 @@ document.addEventListener("DOMContentLoaded", function(event){
         "/":{
             path:'public/home.html',
             title:'home'
+        },
+        "/public/home.html":{
+            path:'/public/home.html',
+            title:'home'
+        },
+        404:{
+            path:"/templates/404.html",
+            title:'404'
         }
+
     }
     
         
@@ -197,7 +206,7 @@ async function editPage(id) {
    
     if (location == 'question_page'){
         document.getElementById('content').innerHTML = html
-        let response = await fetch(`http://localhost:3000/question/48`, {
+        let response = await fetch(`http://localhost:3000/question/{}`, {
             mode:"cors"
         }
         )
@@ -262,17 +271,49 @@ const locationHandler = async() =>{
     if (location.length ==0){
         location = '/';
     }
-    let id = location.slice((location.length - 3))
-    location = location.slice(0, (location.length - 3))
+    let urldata =location.split("/")
+    console.log(urldata) 
+    let id = urldata.slice(urldata.length - 1)[0]
+    if (parseInt(id)) {
+        location = location.slice(0, (location.length - 3))
+        
+        console.log(id)
+        
+        const route = routes[location] || routes['404']
+        console.log(route.path)
+
+        const html = await fetch(route['path']).then((response) => response.text());
     
-    console.log(location)
-    const route = routes[location]
-    console.log(route.path)
 
-    const html = await fetch(route['path']).then((response) => response.text());
-   
+        document.getElementById('content').innerHTML = html;
 
-    document.getElementById('content').innerHTML = html;
+        if (location == '/question_page'){
+            document.getElementById('content').innerHTML = html
+            let response = await fetch(`http://localhost:3000/question/${id}`, {
+                mode:"cors"
+            }
+            )
+            .then(response =>response.json())
+            await organizeData(response)
+            
+        }
+
+
+    } else {
+        const route = routes[location]
+        console.log('skibidiiiiiiiiiiiiiiiiiiii')
+        console.log(route)
+        console.log(location)
+
+        const html = await fetch(route['path']).then((response) => response.text());
+        document.getElementById('content').innerHTML = html;
+        table()
+        
+       
+    }
+    
+    
+
 
     
 
@@ -281,8 +322,10 @@ window.onpopstate = locationHandler;
 
 window.route = route
 
-locationHandler
+window.onbeforeunload = locationHandler;
 
-table()})
+locationHandler()
+
+})
 
 
