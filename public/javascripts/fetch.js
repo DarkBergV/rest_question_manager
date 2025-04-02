@@ -1,12 +1,12 @@
 document.addEventListener("DOMContentLoaded", function(event){
  
     const routes = {
-        "/question_page/:id":{
-        path:'public/questions/question.html',
+        "/question_page":{
+        path:'/public/questions/question.html',
         title: 'question'
         },
         "/":{
-            path:'home.html',
+            path:'public/home.html',
             title:'home'
         }
     }
@@ -51,7 +51,7 @@ document.getElementById("form-submit").addEventListener("click", async function(
     })
     .then(response => response.json())
     .then(res => {
-        console.log(res)
+       
         if (res.status === 200){
             alert("asd")
         }
@@ -74,7 +74,7 @@ async function delete_data(id) {
     })
     .then(response =>response.json())
     .then(res => {
-        console.log(res)
+       
         if (res.status===404){
             alert('not found')
         }else if(res.status===200){
@@ -88,7 +88,7 @@ async function createDelete(id) {
     // create form and buttons
     let delete_form = document.createElement('form')
     delete_form.method = "DELETE"
-    console.log(id)
+
     let delete_space = document.createElement('th')
     let delete_button = document.createElement('button')
     let delete_figure = document.createTextNode('\u00D7')
@@ -129,12 +129,12 @@ async function table() {
                     link.addEventListener('click', async function (e) {
                        
                         const {target} = e;
-                        console.log(target)
+                
                      
                         if (!target.matches('nav a')){
                             return;
                         }
-                        console.log('skibid')
+                       
                         e.preventDefault();
                         route();
                     
@@ -148,7 +148,7 @@ async function table() {
                 }
                 row.append(cell)  
             }
-            console.log(typeof x)
+        
             
             if (x === 'question_id'){
                 id = data.message[i][x]
@@ -210,15 +210,15 @@ async function editPage(id) {
 }*/
 
 async function organizeData(res) {
-    console.log(res)
+  
     const values = {"question":1,"alternative_a":1,"alternative_b":1, "alternative_c":1, "alternative_d":1, "alternative_e":1, "correct_option": 0, "type_question":0, "date_created":2, "question_was_used":0 }
     let edit = document.getElementById('question_edit')
-    console.log(res.message)
+  
 
 
     for (const x in res.message.rows[0]){
         if (values[x] === 1){
-            console.log(x)
+        
             let input = document.createElement('input')
             let label = document.createElement("label")
             label.append(x.replace('_', ' '), ': ')
@@ -247,7 +247,7 @@ async function load_question() {
 }
 
 const route = (event) => {
-    console.log('goofy ass')
+
     event = event || window.event;
     
     event.preventDefault();
@@ -257,22 +257,31 @@ const route = (event) => {
 }
 
 const locationHandler = async() =>{
-    const location = window.location.pathname;
-    console.log(location)
+    let location = window.location.pathname;
+   
     if (location.length ==0){
         location = '/';
     }
-
+    let id = location.slice((location.length - 3))
+    location = location.slice(0, (location.length - 3))
+    
+    console.log(location)
     const route = routes[location]
+    console.log(route.path)
 
-    const html = await fetch(route).then((response) => response.text());
-    console.log(html)
+    const html = await fetch(route['path']).then((response) => response.text());
+   
 
     document.getElementById('content').innerHTML = html;
 
     
 
 }
+window.onpopstate = locationHandler;
+
+window.route = route
+
+locationHandler
 
 table()})
 
