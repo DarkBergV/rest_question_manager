@@ -227,8 +227,13 @@ async function organizeData(res) {
     submit.value = 'submit'
     submit.append('submit')
     submit.addEventListener('click', async function (e) {
+        let form_items = ['question', 'alternative_a', 'alternative_b', 'alternative_c', 'alternative_d', 'alternative_e', 'correct_option', 'type_question', 'question_was_used']
         e.preventDefault(e)
-        console.log("skibidi")
+        let form = document.querySelector('form')
+        
+
+        console.log(form)
+        
         
     })
 
@@ -282,12 +287,46 @@ async function organizeData(res) {
             }
             edit.append(label)
             edit.append(select)
+        } else if(x == 'question_was_used'){
+            let select = document.createElement('select')
+            let used = ["Yes", "No"]
+
+            let used_value
+            if (res.message.rows[0][x]){
+                used_value = "yes"
+            }else{
+                used_value = "no"
+            }
+
+            for (i = 0; i<used.length; i++){
+                let option = document.createElement('option')
+                option.value = used[i].toLowerCase()
+            
+                if(option.value === used_value){
+                    option.selected = used_value
+                }
+                option.append(used[i])
+                select.append(option)
+            }
+            edit.append(label)
+            edit.append(select)
         }
         edit.append(submit)
 
     }
     
     
+}
+
+async function update_question(id){
+    await fetch(`http://localhost:3000/update/:${id}`, {
+        method : "put",
+        headers : {
+            "content-type":"application/json"
+        },
+        mode: "cors",
+       
+    })
 }
 
 async function load_question() {
