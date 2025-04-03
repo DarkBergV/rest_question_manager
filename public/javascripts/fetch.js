@@ -218,23 +218,73 @@ async function editPage(id) {
     
 }*/
 
+//Organize the question data on the form 
 async function organizeData(res) {
   
     const values = {"question":1,"alternative_a":1,"alternative_b":1, "alternative_c":1, "alternative_d":1, "alternative_e":1, "correct_option": 0, "type_question":0, "date_created":2, "question_was_used":0 }
     let edit = document.getElementById('question_edit')
+    let submit = document.createElement('button')
+    submit.value = 'submit'
+    submit.append('submit')
+    submit.addEventListener('click', async function (e) {
+        e.preventDefault(e)
+        console.log("skibidi")
+        
+    })
+
   
 
 
     for (const x in res.message.rows[0]){
+        let label = document.createElement("label")
+        label.append(x.replace('_', ' '), ': ')
         if (values[x] === 1){
         
             let input = document.createElement('input')
-            let label = document.createElement("label")
-            label.append(x.replace('_', ' '), ': ')
+            
             input.value = res.message.rows[0][x]
             edit.append(label)
             edit.append(input)
+        } else if(x == "correct_option"){
+            let select = document.createElement('select')
+            
+            let options = ["a","b","c","d","e"]
+            for (i = 0; i < options.length; i++){
+                let option = document.createElement('option')
+                option.value = options[i]
+                if(option.value == res.message.rows[0][x]){
+                    option.selected = res.message.rows[0][x]
+                }
+                console.log(res.message.rows[0][x])
+                
+             
+                option.append(options[i])
+                select.append(option) 
+            }
+            edit.append(label)
+            edit.append(select)
+           
+        } else if(x == 'type_question'){
+            let types = ['Excel', 'Word', 'Internet', 'Microsoft', 'Email']
+
+            let select = document.createElement('select')
+
+            for (i = 0; i < types.length; i++){
+                let option = document.createElement('option')
+                option.value = types[i].toLowerCase()
+                if (option.value == res.message.rows[0][x]){
+                    option.selected = res.message.rows[0][x]
+                }
+
+                option.append(types[i])
+
+                select.append(option)
+            }
+            edit.append(label)
+            edit.append(select)
         }
+        edit.append(submit)
+
     }
     
     
