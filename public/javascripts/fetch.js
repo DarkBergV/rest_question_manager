@@ -226,16 +226,7 @@ async function organizeData(res) {
     let submit = document.createElement('button')
     submit.value = 'submit'
     submit.append('submit')
-    submit.addEventListener('click', async function (e) {
-        let form_items = ['question', 'alternative_a', 'alternative_b', 'alternative_c', 'alternative_d', 'alternative_e', 'correct_option', 'type_question', 'question_was_used']
-        e.preventDefault(e)
-        let form = document.querySelector('form')
-        
-
-        console.log(form)
-        
-        
-    })
+    
 
   
 
@@ -244,15 +235,15 @@ async function organizeData(res) {
         let label = document.createElement("label")
         label.append(x.replace('_', ' '), ': ')
         if (values[x] === 1){
-        
-            let input = document.createElement('input')
             
+            let input = document.createElement('input')
+            input.id = x
             input.value = res.message.rows[0][x]
             edit.append(label)
             edit.append(input)
         } else if(x == "correct_option"){
             let select = document.createElement('select')
-            
+            select.id = x
             let options = ["a","b","c","d","e"]
             for (i = 0; i < options.length; i++){
                 let option = document.createElement('option')
@@ -260,7 +251,7 @@ async function organizeData(res) {
                 if(option.value == res.message.rows[0][x]){
                     option.selected = res.message.rows[0][x]
                 }
-                console.log(res.message.rows[0][x])
+             
                 
              
                 option.append(options[i])
@@ -273,6 +264,7 @@ async function organizeData(res) {
             let types = ['Excel', 'Word', 'Internet', 'Microsoft', 'Email']
 
             let select = document.createElement('select')
+            select.id = x
 
             for (i = 0; i < types.length; i++){
                 let option = document.createElement('option')
@@ -297,7 +289,7 @@ async function organizeData(res) {
             }else{
                 used_value = "no"
             }
-
+            select.id = x
             for (i = 0; i<used.length; i++){
                 let option = document.createElement('option')
                 option.value = used[i].toLowerCase()
@@ -311,14 +303,31 @@ async function organizeData(res) {
             edit.append(label)
             edit.append(select)
         }
+        submit.addEventListener('click', async function (e) {
+            let form_items = ['question', 'alternative_a', 'alternative_b', 'alternative_c', 'alternative_d', 'alternative_e', 'correct_option', 'type_question', 'question_was_used']
+            e.preventDefault(e)
+            await update_question(48)
+            
+            
+        })
         edit.append(submit)
 
     }
     
     
 }
-
+//todo note to self update not working, not getting data from the form
 async function update_question(id){
+    let form_items = ['question', 'alternative_a', 'alternative_b', 'alternative_c', 'alternative_d', 'alternative_e', 'correct_option', 'type_question', 'question_was_used']
+    let form = document.getElementById('question_edit')
+    let data = new Object()
+    for (i = 0; i < form_items.length; i++){
+       
+       console.log(form[form_items[i]].value)
+
+    }
+    data = JSON.stringify(data)
+    console.log(data)
     await fetch(`http://localhost:3000/update/:${id}`, {
         method : "put",
         headers : {
@@ -361,15 +370,15 @@ const locationHandler = async() =>{
         location = '/';
     }
     let urldata =location.split("/")
-    console.log(urldata) 
+
     let id = urldata.slice(urldata.length - 1)[0]
     if (parseInt(id)) {
         location = location.slice(0, (location.length - 3))
         
-        console.log(id)
+  
         
         const route = routes[location] || routes['404']
-        console.log(route.path)
+        
 
         const html = await fetch(route['path']).then((response) => response.text());
     
@@ -390,9 +399,7 @@ const locationHandler = async() =>{
 
     } else {
         const route = routes[location]
-        console.log('skibidiiiiiiiiiiiiiiiiiiii')
-        console.log(route)
-        console.log(location)
+       
 
         const html = await fetch(route['path']).then((response) => response.text());
         document.getElementById('content').innerHTML = html;
