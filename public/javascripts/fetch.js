@@ -224,6 +224,7 @@ async function organizeData(res) {
     const values = {"question":1,"alternative_a":1,"alternative_b":1, "alternative_c":1, "alternative_d":1, "alternative_e":1, "correct_option": 0, "type_question":0, "date_created":2, "question_was_used":0 }
     let edit = document.getElementById('question_edit')
     let submit = document.createElement('button')
+    let id 
     submit.value = 'submit'
     submit.append('submit')
     
@@ -302,17 +303,21 @@ async function organizeData(res) {
             }
             edit.append(label)
             edit.append(select)
+        }else if(x == "question_id"){
+         
+            id = res.message.rows[0][x]
         }
-        submit.addEventListener('click', async function (e) {
-            let form_items = ['question', 'alternative_a', 'alternative_b', 'alternative_c', 'alternative_d', 'alternative_e', 'correct_option', 'type_question', 'question_was_used']
-            e.preventDefault(e)
-            await update_question(48)
-            
-            
-        })
-        edit.append(submit)
+        
 
     }
+    submit.addEventListener('click', async function (e) {
+        let form_items = ['question', 'alternative_a', 'alternative_b', 'alternative_c', 'alternative_d', 'alternative_e', 'correct_option', 'type_question', 'question_was_used']
+        e.preventDefault(e)
+        await update_question(id)
+        
+        
+    })
+    edit.append(submit)
     
     
 }
@@ -321,20 +326,28 @@ async function update_question(id){
     let form_items = ['question', 'alternative_a', 'alternative_b', 'alternative_c', 'alternative_d', 'alternative_e', 'correct_option', 'type_question', 'question_was_used']
     let form = document.getElementById('question_edit')
     let data = new Object()
+  
     for (i = 0; i < form_items.length; i++){
        
-       console.log(form[form_items[i]].value)
+        data[form_items[i]] = form[form_items[i]].value
 
     }
     data = JSON.stringify(data)
     console.log(data)
-    await fetch(`http://localhost:3000/update/:${id}`, {
+   
+    await fetch(`http://localhost:3000/update/${id}`, {
         method : "put",
         headers : {
             "content-type":"application/json"
         },
         mode: "cors",
+        body : (data)
        
+    }).then(response => response.json())
+    .then(res =>{
+        if (res.status === 200){
+            console.log('we like rest api guys')
+        }
     })
 }
 
