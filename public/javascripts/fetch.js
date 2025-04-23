@@ -333,7 +333,7 @@ async function update_question(id){
 
     }
     data = JSON.stringify(data)
-    console.log(data)
+  
    
     await fetch(`http://localhost:3000/update/${id}`, {
         method : "put",
@@ -346,7 +346,9 @@ async function update_question(id){
     }).then(response => response.json())
     .then(res =>{
         if (res.status === 200){
-            console.log('we like rest api guys')
+            console.log('status okay')
+        } else if (res.status === 404){
+            console.log(res.message)
         }
     })
 }
